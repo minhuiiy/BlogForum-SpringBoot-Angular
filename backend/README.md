@@ -50,7 +50,7 @@ Dự án được chia nhỏ thành các Module chức năng (Features) độc l
 - **[Feature] Chi tiết Bài viết (Post Detail):** Code Logic cho Nút Vote đổi màu, Ô nhập Bình luận. Render (vẽ) luồng Bình luận đệ quy lồng nhau ra màn hình.
 - **[Logic] Live Notification:** Viết Service bắt sóng Socket báo Toast dưới góc màn hình.
 
-### Thành - Quality Assurance & Bug Tracking
+### Thành, Tiến - Quality Assurance & Bug Tracking
 *(Chịu trách nhiệm Đảm bảo Chất lượng Không có Lỗi tàng hình)*
 - **[Testing] Kịch bản Postman:** Bắn thử tất cả các API của Backend-1 & Backend-2. Bắt các mã Status Code (200 OK, 401 Unauthorized, 500 Error...).
 - **[Testing] Kiểm thử Giao diện (Manual Test):** Đóng vai người dùng (User) bấm linh tinh các nút ở Frontend. Spam click nút Vote, bỏ trống Comment vẫn ấn Gửi, thử Login bằng chữ Tàu...
