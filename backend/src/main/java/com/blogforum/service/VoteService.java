@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import com.blogforum.entity.NotificationMessage;
+
 @Service
 public class VoteService {
 
@@ -19,6 +22,9 @@ public class VoteService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public void vote(Long postId, VoteType newVoteType, Long userId) {
@@ -60,5 +66,12 @@ public class VoteService {
 
         // Lưu lại tổng điểm mới vào bảng Posts
         postRepository.save(post);
+
+        // Phát thông báo Real-time STOMP
+        NotificationMessage notif = new NotificationMessage(
+                "VOTE",
+                "Ai đó vừa reaction (vote) vào bài viết số " + postId,
+                postId);
+        messagingTemplate.convertAndSend("/topic/notifications", notif);
     }
 }
