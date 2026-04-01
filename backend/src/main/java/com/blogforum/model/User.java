@@ -1,42 +1,63 @@
 package com.blogforum.model;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import lombok.Getter;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "users")
-@Getter @Setter @NoArgsConstructor
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email") })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false) 
+    @NotBlank
+    @Size(max = 20)
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @NotBlank
+    @Size(max = 50)
     private String email;
 
-    @Column(nullable=false)
+    @NotBlank
+    @Size(max = 120)
+    @JsonIgnore
     private String password;
 
-    @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
-        private Set<Role> roles = new HashSet<>();
+    private String bio;
+
+    private String avatarUrl;
+
+    @Builder.Default
+    private int reputationPoints = 0;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonIgnore
+    @Builder.Default
+    private Set<Role> roles = new HashSet<>();
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
